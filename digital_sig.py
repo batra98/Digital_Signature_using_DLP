@@ -12,7 +12,7 @@ class Alice():
 
 	def send_random(self,p,n):
 		self.r = rand.getrandbits(n) ## r
-		return pow(g,self.r,p) ## g ^ r % p
+		return pow(self.g,self.r,p) ## g ^ r % p
 
 	def receive_c(self,p,n,c):
 		self.z = c*self.private_key + self.r ## cx+r
@@ -30,7 +30,7 @@ class Bob():
 		return rand.getrandbits(n)%p
 
 	def verify(self,g,z,c,p):
-		X = pow(g,z,p)
+		X = pow(self.g,z,p)
 		Y = ((pow(self.public_key,c,p))*(self.m1%p))%p
 
 		if(X == Y):
@@ -45,7 +45,9 @@ class Bob():
 # n = 5
 
 n = 1024
+print("Length of prime "+str(n))
 p = gensafeprime.generate(n)
+print("Prime p = "+str(p))
 q = (p-1)//2
 
 t = 1
@@ -55,13 +57,17 @@ while t == 1:
 
 g = h
 
+print("Generator g = "+str(g))
+
 M = rand.getrandbits(n)
+
+print("Message m ="+str(M))
 
 A = Alice(g,p,n)
 B = Bob(g,A.public_key,p)
 
-print(A.private_key)
-print(A.public_key)
+print("x = "+str(A.private_key))
+print("y = "+str(A.public_key))
 
 m1 = A.send_random(p,n)
 B.receive_random(m1)
